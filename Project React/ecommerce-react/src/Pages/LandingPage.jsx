@@ -1,5 +1,10 @@
 import React from 'react'; // Untuk mengaktifkan library react
 import Form from '../Components/Form';
+import Banner from '../Components/Banner';
+import Category from '../Components/Category';
+import Axios from 'axios';
+
+const API_URL = "http://localhost:5000"
 /**
  * React Data Management :
  * 1️⃣ state : 
@@ -35,96 +40,38 @@ class LandingPage extends React.Component {
         super(props);
         // local data management
         this.state = {
-            counter: 0,
-            input: "",
-            dbStudent: [
-                {
-                    id: 1,
-                    name: "Nindya",
-                    class: "JC-Full Stack",
-                    time: "After-hour",
-                    job: "Product Manager",
-                    age: 26
-                }
-            ]
+            // dbBanner: []
         }
     }
 
-    printData = () => {
-        return this.state.dbStudent.map((value, index) => {
-            return <tr>
-                <td>{index + 1}</td>
-                <td>{value.name}</td>
-                <td>{value.class}</td>
-                <td>{value.time}</td>
-                <td>{value.job}</td>
-            </tr>
-        })
+    componentDidMount() {
+        this.getBanner();
     }
 
-    // membuatn fungsi dalam class component
-    btnIncrement = () => {
-        let temp = this.state.counter;
-        temp++
-        this.setState({
-            counter: temp
-        })
-        // counter++;
-        // console.log(counter);
+
+    // ALTERNATIVE TO GET DATA FROM "BACK-END"
+    getBanner = () => {
+        Axios.get(`${API_URL}/banner`)
+            .then((response) => {
+                // jika berhasil mendapatkan response
+                console.log("From Class Component:", response.data)
+                this.setState({ dbBanner: response.data })
+            }).catch((error) => {
+                // jika tidak berhasil mendapatkan response
+                console.log(error)
+            })
     }
 
-    btnDecrement = () => {
-        let temp = this.state.counter;
-        temp--
-        this.setState({
-            counter: temp
-        })
-        // counter--;
-        // console.log(counter);
-    }
-
-    btnSubmit = () => {
-        console.log(this.refs.inValue.value)
-        this.setState({ input: this.refs.inValue.value })
-    }
-
-    handleInput = (event) => {
-        console.log(event.target)
-        this.setState({ input: event.target.value })
-    }
-
-    // men-generate component html
     render() {
         // destructuring state
-        let { counter, input } = this.state;
+
         // return hmtl component
         return (
             <div>
-                <span>Value from state input :</span>
-                <h4>{input}</h4>
-                <button type='button' onClick={this.btnDecrement}>Decrement</button>
-                <span style={{ fontSize: "24px", margin: "0px 8px" }}>{counter}</span>
-                <button type='button' onClick={this.btnIncrement}>Increment</button>
-                <table className='table'>
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Name</th>
-                            <th>Class</th>
-                            <th>Time</th>
-                            <th>Job</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.printData()}
-                    </tbody>
-                </table>
-                <Form
-                    title="Data Form Input"
-                    usia={80}
-                    handleInput={this.handleInput}
-                    btnSubmit={this.btnSubmit}
+                <Banner
+                // bannerList={this.state.dbBanner}
                 />
+                <Category />
             </div>
         )
     }
