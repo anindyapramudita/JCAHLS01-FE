@@ -1,80 +1,68 @@
 import React from 'react'; // Untuk mengaktifkan library react
-import Form from '../Components/Form';
 import Banner from '../Components/Banner';
 import Category from '../Components/Category';
 import Axios from 'axios';
+import { API_URL } from "../helper";
 
-const API_URL = "http://localhost:5000"
-/**
- * React Data Management :
- * 1️⃣ state : 
- * - untuk memanage data pada suatu component
- * - menyimpan data pada state ketika data tersebut mempengaruhi tampilan
- * 
- * 
- * 2️⃣ props : untuk mengelola data agar dapat digunakan oleh component lain
- *             spesifiknya mentrasfer data dari parent component ke child component
- * 
- * 
- */
+const LandingPage = (props) => {
+
+    const [dbProducts, setDbProducts] = React.useState([])
 
 
+    React.useEffect(() => {
+        getProducts();
+    }, [])
 
-
-
-// CLASS COMPONENT
-// Initialize component
-
-// let counter = 0;
-class LandingPage extends React.Component {
-    // Urutan render component:
-    // 1️⃣ Constructor
-    // 2️⃣ Fungsi Render
-    // 3️⃣ Update tampilan
-    // 4️⃣ ComponentDidMount (fungsi di bawah constructor)
-
-
-
-    // untuk memanage data yang akan digunakan pada component react
-    constructor(props) {
-        super(props);
-        // local data management
-        this.state = {
-            // dbBanner: []
-        }
-    }
-
-    componentDidMount() {
-        this.getBanner();
-    }
-
-
-    // ALTERNATIVE TO GET DATA FROM "BACK-END"
-    getBanner = () => {
-        Axios.get(`${API_URL}/banner`)
+    const getProducts = () => {
+        Axios.get(`${API_URL}/products`)
             .then((response) => {
-                // jika berhasil mendapatkan response
-                console.log("From Class Component:", response.data)
-                this.setState({ dbBanner: response.data })
+                setDbProducts(response.data)
             }).catch((error) => {
-                // jika tidak berhasil mendapatkan response
                 console.log(error)
             })
     }
 
-    render() {
-        // destructuring state
-
-        // return hmtl component
-        return (
-            <div>
-                <Banner
-                // bannerList={this.state.dbBanner}
-                />
-                <Category />
-            </div>
-        )
-    }
+    return (
+        <div>
+            <Banner />
+            <Category />
+            {dbProducts != "" ?
+                <div className='container'>
+                    <div className='row my-5'>
+                        <hr />
+                        <div className='col-12 col-md-7 align-self-center'>
+                            <h1>{dbProducts[0].nama}</h1>
+                            <h3 className='text-muted fs-6'>{dbProducts[0].deskripsi}</h3>
+                        </div>
+                        <div className='col-12 col-md-5'>
+                            <img src={dbProducts[0].images[0]} style={{ width: "500px" }} />
+                        </div>
+                    </div>
+                    <div className='row my-5'>
+                        <hr />
+                        <div className='col-12 col-md-5'>
+                            <img src={dbProducts[1].images[0]} style={{ width: "500px" }} />
+                        </div>
+                        <div className='col-12 col-md-7 align-self-center'>
+                            <h1>{dbProducts[1].nama}</h1>
+                            <h3 className='text-muted fs-6'>{dbProducts[1].deskripsi}</h3>
+                        </div>
+                    </div>
+                    <div className='row my-5'>
+                        <hr />
+                        <div className='col-12 col-md-7 align-self-center'>
+                            <h1>{dbProducts[2].nama}</h1>
+                            <h3 className='text-muted fs-6'>{dbProducts[2].deskripsi}</h3>
+                        </div>
+                        <div className='col-12 col-md-5'>
+                            <img src={dbProducts[2].images[0]} style={{ width: "500px" }} />
+                        </div>
+                    </div>
+                </div>
+                :
+                null}
+        </div>
+    )
 }
 
 export default LandingPage

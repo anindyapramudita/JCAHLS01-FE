@@ -20,14 +20,12 @@ const Banner = (props) => {
     const getBanner = () => {
         Axios.get(`${API_URL}/banner`)
             .then((response) => {
-                console.log("From Functional Component:", response.data)
+                // console.log("From Functional Component:", response.data)
                 setBannerList(response.data);
             }).catch((error) => {
                 console.log(error);
             })
     }
-
-
 
 
     return (
